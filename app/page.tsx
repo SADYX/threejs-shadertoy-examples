@@ -24,6 +24,7 @@ export default function Home() {
 		shaderType: {
 			options: [
 				'Psychedelix',
+				'Shader art intro',
 			]
 		},
 		speed: {
@@ -102,6 +103,7 @@ export default function Home() {
 
 		window.addEventListener('resize', onResize);
 		animte();
+		onResize();
 
 		return () => {
 			cancelAnimationFrame(idAnimateFrame);
