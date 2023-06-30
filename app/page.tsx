@@ -26,6 +26,8 @@ export default function Home() {
 			options: [
 				'Psychedelix',
 				'Shader art intro',
+				'Base warp FBM',
+				'Tileable water caustic',
 			]
 		},
 		speed: {
