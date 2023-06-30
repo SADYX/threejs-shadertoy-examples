@@ -1,13 +1,12 @@
 'use client'
 
-import Image from 'next/image'
 import styles from './page.module.sass'
 import { useControls } from 'leva'
 import { useEffect, useMemo, useRef, useState } from 'react';
 import threeInit, { ThreeParams } from './utils/three-init';
 import createGeometryByString from './utils/geometries';
 import * as THREE from 'three';
-import createMaterialByString from './utils/materials';
+import { SHADER_CONFIG } from './config/shader-config';
 
 export default function Home() {
 	const threeRef = useRef<HTMLDivElement>(null);
@@ -23,12 +22,7 @@ export default function Home() {
 			],
 		},
 		shaderType: {
-			options: [
-				'Psychedelix',
-				'Shader art intro',
-				'Base warp FBM',
-				'Tileable water caustic',
-			]
+			options: SHADER_CONFIG.map(({ label }) => label),
 		},
 		speed: {
 			min: 0,
@@ -54,8 +48,8 @@ export default function Home() {
 		return createGeometryByString(geometryType);
 	}, [geometryType]);
 
-	const material = useMemo(() => {
-		return createMaterialByString(shaderType);
+	const { fc: material, sourceCodeUrl } = useMemo(() => {
+		return SHADER_CONFIG!.find(({ label }) => label === shaderType)!;
 	}, [shaderType]);
 
 	useEffect(() => {
@@ -79,7 +73,6 @@ export default function Home() {
 		} = threeItems;
 
 		camera.position.set(30, 30, 30);
-
 	}, []);
 
 	// mesh
@@ -134,6 +127,14 @@ export default function Home() {
 	return (
 		<div className={styles.container}>
 			<div className={styles.three} ref={threeRef} />
+			<div className={styles.url}>
+				<span className={styles.prefix}>Shader Source Code:</span>
+				<a
+					className={styles.content}
+					href={sourceCodeUrl}
+					target='_blank'
+				>{sourceCodeUrl}</a>
+			</div>
 		</div>
 	)
 }
