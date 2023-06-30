@@ -12,8 +12,9 @@ import createMaterialByString from './utils/materials';
 export default function Home() {
 	const threeRef = useRef<HTMLDivElement>(null);
 	const speedRef = useRef<number>(1);
+	const resolutionRef = useRef<[number, number]>([400, 400]);
 	const [threeParams, setThreeParams] = useState<ThreeParams>();
-	const { geometryType, shaderType, speed } = useControls({
+	const { geometryType, shaderType, speed, resolution_X, resolution_Y } = useControls({
 		geometryType: {
 			options: [
 				'Box',
@@ -32,7 +33,19 @@ export default function Home() {
 			max: 10,
 			step: 0.1,
 			value: 1,
-		}
+		},
+		resolution_X: {
+			min: 1,
+			max: 800,
+			step: 1,
+			value: 400,
+		},
+		resolution_Y: {
+			min: 1,
+			max: 800,
+			step: 1,
+			value: 400,
+		},
 	});
 
 	const geometry = useMemo(() => {
@@ -46,6 +59,10 @@ export default function Home() {
 	useEffect(() => {
 		speedRef.current = speed;
 	}, [speed]);
+
+	useEffect(() => {
+		resolutionRef.current = [resolution_X, resolution_Y];
+	}, [resolution_X, resolution_Y]);
 
 	// init scene
 	useEffect(() => {
@@ -83,6 +100,10 @@ export default function Home() {
 		const animte = () => {
 			idAnimateFrame = requestAnimationFrame(animte);
 			has_iTime && (material.uniforms.iTime.value += clock.getDelta() * speedRef.current);
+			if (has_iResolution) {
+				material.uniforms.iResolution.value.setX(resolutionRef.current[0]);
+				material.uniforms.iResolution.value.setY(resolutionRef.current[1]);
+			}
 			orbitControl.update();
 			renderer.render(scene, camera);
 		}
@@ -95,10 +116,6 @@ export default function Home() {
 			camera.aspect = width / height;
 			camera.updateProjectionMatrix();
 			renderer.setSize(width, height);
-			if (has_iResolution) {
-				material.uniforms.iResolution.value.setX(width);
-				material.uniforms.iResolution.value.setY(height);
-			}
 		}
 
 		window.addEventListener('resize', onResize);
