@@ -92,8 +92,8 @@ export default function Home() {
 		const mesh = new THREE.Mesh(geometry, material);
 		threeParams.scene.add(mesh);
 
-		const animte = () => {
-			idAnimateFrame = requestAnimationFrame(animte);
+		const animate = () => {
+			idAnimateFrame = requestAnimationFrame(animate);
 			has_iTime && (material.uniforms.iTime.value += clock.getDelta() * speedRef.current);
 			if (has_iResolution) {
 				material.uniforms.iResolution.value.setX(resolutionRef.current[0]);
@@ -114,7 +114,7 @@ export default function Home() {
 		}
 
 		window.addEventListener('resize', onResize);
-		animte();
+		animate();
 		onResize();
 
 		return () => {
